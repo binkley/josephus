@@ -1,17 +1,23 @@
 """
->>> Rebels(40).die()
+>>> Rebels(40).disband()
 [13, 28]
 """
 
 
 class RebelsIterator:
     def __init__(self, rebels):
-        self.start = rebels.max().right
-        self.curr = self.start
+        def _max():
+            curr = rebels.curr
+            while curr.right > curr:
+                curr = curr.right
+            return curr
+
+        self.first = _max().right
+        self.curr = self.first
         self.repeated = False
 
     def __next__(self):
-        if self.curr == self.start:
+        if self.curr == self.first:
             if self.repeated:
                 raise StopIteration
             else:
@@ -22,9 +28,6 @@ class RebelsIterator:
 
 
 class Rebels:
-    def __iter__(self):
-        return RebelsIterator(self)
-
     def __init__(self, count):
         """
         >>> Rebels(1)
@@ -38,55 +41,39 @@ class Rebels:
         >>> Rebels(5)
         [1, 2, 3, 4, 5]
         """
-        self.start = Soldier(1, None, None)
-        self.start.left = self.start
-        self.start.right = self.start
+        self.curr = Soldier.one()
+        curr = self.curr
         while 1 < count:
-            self.add()
+            curr = curr.join()
             count -= 1
 
-    def max(self):
-        """
-        >>> rebels = Rebels(4)
-        >>> rebels.start = rebels.start.left
-        >>> rebels.max()
-        3\\4/1
-        """
-        start = self.start
-        while start.num < start.right.num:
-            start = start.right
-        return start
+    def __iter__(self):
+        return RebelsIterator(self)
 
-    def add(self):
-        start = self.max()
-        right = Soldier(start.num + 1, start, start.right)
-        start.right = right
-        right.right.left = right
-
-    def die(self):
+    def disband(self):
         """
-        >>> Rebels(1).die()
+        >>> Rebels(1).disband()
         [1]
-        >>> Rebels(2).die()
+        >>> Rebels(2).disband()
         [1, 2]
-        >>> Rebels(3).die()
+        >>> Rebels(3).disband()
         [1, 2]
-        >>> Rebels(4).die()
+        >>> Rebels(4).disband()
         [1, 4]
-        >>> Rebels(5).die()
+        >>> Rebels(5).disband()
         [2, 4]
         """
         while True:
-            victim = self.start.right.right
-            if victim == self.start:
+            victim = self.curr.right.right
+            if victim == self.curr:
                 return self
-            self.start = victim.right
-            victim.die()
+            self.curr = victim.right
+            victim.leave()
 
     def __repr__(self):
         """
         >>> x = Rebels(4)
-        >>> x.start = x.start.left
+        >>> x.curr = x.curr.left
         >>> x
         [1, 2, 3, 4]
         """
@@ -94,34 +81,41 @@ class Rebels:
 
 
 class Soldier:
-    def __init__(self, num, left, right):
+    @staticmethod
+    def one():
         """
-        >>> solo = Soldier(0, None, None)
+        >>> solo = Soldier.one()
         >>> solo.num
-        0
+        1
         """
+        solo = Soldier(1, None, None)
+        solo.left = solo
+        solo.right = solo
+        return solo
+
+    def __init__(self, num, left, right):
         self.num = num
         self.left = left
         self.right = right
 
-    def die(self):
+    def join(self):
+        center = Soldier(self.num + 1, self, self.right)
+        self.right.left = center
+        self.right = center
+        return center
+
+    def leave(self):
         """
-        >>> left = Soldier(1, None, None)
-        >>> center = Soldier(2, None, None)
-        >>> right = Soldier(3, None, None)
-        >>> left.left = right
-        >>> left.right = center
-        >>> center.left = left
-        >>> center.right = right
-        >>> right.left = center
-        >>> right.right = left
+        >>> left = Soldier.one()
+        >>> center = left.join()
+        >>> right = center.join()
         >>> left
         3\\1/2
         >>> center
         1\\2/3
         >>> right
         2\\3/1
-        >>> center.die()
+        >>> center.leave()
         >>> left
         3\\1/3
         >>> right
@@ -131,6 +125,9 @@ class Soldier:
         self.right.left = self.left
         self.left = None
         self.right = None
+
+    def __gt__(self, other):
+        return self.num > other.num
 
     def __repr__(self):
         return "{}\\{}/{}".format(
