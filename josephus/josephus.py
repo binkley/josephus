@@ -102,6 +102,31 @@ class Rebels:
             curr = curr.right
         return i
 
+    def __getitem__(self, item):
+        """
+        >>> rebels = Rebels(5)
+        >>> rebels[0].num
+        1
+        >>> rebels[1].num
+        2
+        >>> rebels[2].num
+        3
+        >>> rebels[-1].num
+        5
+        >>> rebels[-2].num
+        4
+        """
+        if 0 > item:
+            curr = self.curr
+            for _ in range(item, 0):
+                curr = curr.left
+            return curr
+        else:
+            curr = self.curr
+            for _ in range(0, item):
+                curr = curr.right
+            return curr
+
     def disband(self):
         """
         >>> Rebels(1).disband()
