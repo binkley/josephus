@@ -81,6 +81,27 @@ class Rebels:
     def __iter__(self):
         return RebelsIterator(self)
 
+    def __len__(self):
+        """
+        >>> len(Rebels(1))
+        1
+        >>> len(Rebels(2))
+        2
+        >>> len(Rebels(3))
+        3
+        >>> len(Rebels(4))
+        4
+        >>> len(Rebels(5))
+        5
+        """
+        head = self.curr
+        curr = head.right
+        i = 1
+        while not curr == head:
+            i = i + 1
+            curr = curr.right
+        return i
+
     def disband(self):
         """
         >>> Rebels(1).disband()
