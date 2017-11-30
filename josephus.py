@@ -55,8 +55,7 @@ class Soldier:
         return self.num > other.num
 
     def __repr__(self):
-        return "{}\\{}/{}".format(
-            self.left.num, self.num, self.right.num)
+        return "{}\\{}/{}".format(self.left.num, self.num, self.right.num)
 
 
 class Rebels:
