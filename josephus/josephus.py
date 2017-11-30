@@ -18,7 +18,7 @@ class Soldier:
         solo.right = solo
         return solo
 
-    def __init__(self, num: int, left: 'Soldier', right: 'Soldier'):
+    def __init__(self, num: int, left: 'Soldier', right: 'Soldier') -> None:
         self.num = num
         self.left = left
         self.right = right
@@ -59,7 +59,7 @@ class Soldier:
 
 
 class Rebels:
-    def __init__(self, count: int):
+    def __init__(self, count: int) -> None:
         """
         >>> Rebels(1)
         [1]
@@ -170,7 +170,7 @@ class Rebels:
 
 
 class RebelsIterator:
-    def __init__(self, rebels: Rebels):
+    def __init__(self, rebels: Rebels) -> None:
         def _max() -> Soldier:
             curr = rebels.curr
             while curr.right > curr:
