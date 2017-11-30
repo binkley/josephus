@@ -127,6 +127,18 @@ class Rebels:
                 curr = curr.right
             return curr
 
+    def __delitem__(self, key):
+        """
+        >>> rebels = Rebels(5)
+        >>> del rebels[2]
+        >>> rebels
+        [1, 2, 4, 5]
+        >>> del rebels[-2]
+        >>> rebels
+        [1, 2, 5]
+        """
+        self[key].leave()
+
     def disband(self):
         """
         >>> Rebels(1).disband()
