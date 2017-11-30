@@ -1,4 +1,5 @@
+*.pyc
+/*.egg-info/
 /*.iml
 /.idea/
 /dist/
-/josephus.egg-info/
